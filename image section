@@ -1,0 +1,58 @@
+
+<section class="image-collage">
+  <div class="image-collage-flex">
+    <div class="image-collage-left">
+      <img class="collage-image" src="{{ section.settings.left_collage_img | img_url:'' }}">
+    </div>
+    <div class="image-collage-right">
+      <img class="collage-image" src="{{ section.settings.right_collage_img | img_url:'' }}">
+    </div>
+  </div>
+</section>
+
+<style>
+
+.image-collage-flex {
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+}
+.image-collage-right , .image-collage-left{
+  flex: 0 0 49%;
+  max-width: 49%;
+}
+.collage-image{
+  width:100%;
+  max-width:100%;
+}
+
+
+
+  
+</style>
+
+
+
+{% schema %}
+  {
+    "name": "Custom Image Collage",
+    "settings": [
+          {
+            "type": "image_picker",
+            "id": "left_collage_img",
+            "label": "Left Image"
+          },
+                {
+            "type": "image_picker",
+            "id": "right_collage_img",
+            "label": "Right Image"
+          }     
+    ],
+      "presets": [
+    {
+      "name": "Custom Image Collage"
+    }
+  ]
+  }
+{% endschema %}
+
