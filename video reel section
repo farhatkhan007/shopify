@@ -1,0 +1,194 @@
+{{ 'video-reel.css' | asset_url | stylesheet_tag }}
+
+<style>
+  .video-reel-section {
+    padding: 50px 0 80px;
+    position: relative;
+  }
+
+  .video-reel-swiper {
+    width: 100%;
+  }
+
+  .video-reel-swiper .swiper-slide {
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transform: scale(0.8);
+  }
+
+  .video-reel-swiper .swiper-slide-active {
+    transform: scale(1);
+    z-index: 2;
+  }
+
+  .video-slide {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .video-reel-heading {
+    color: var(--color-white);
+    font-family: var(--font-primary);
+    font-size: var(--font-size-48);
+    letter-spacing: -3.43px;
+    text-align: center;
+    text-transform: uppercase;
+    margin-bottom: 75px;
+  }
+
+  .video-reel-section .swiper-button-prev, 
+  .video-reel-section .swiper-button-next {
+    bottom: 0;
+    top: auto;
+    right: 40px;
+    left: auto;
+  }
+
+  .video-reel-section .swiper-button-prev {
+    right: 75px;
+  }
+
+  @media (max-width: 768px) {
+    .video-reel-heading {
+      font-size: var(--font-size-28);
+      letter-spacing: -1.41px;
+      margin-bottom: 50px;
+    }
+
+    .video-reel-section {
+      padding-bottom: 0;
+    }
+
+    .video-reel-swiper {
+      padding-bottom: 100px;
+    }
+
+    .video-reel-section .swiper-button-prev, 
+    .video-reel-section .swiper-button-next {
+      bottom: 25px;
+    }
+  }
+
+
+</style>
+
+{%- assign section_color = section.settings.color_scheme -%}
+<section style="background: {{ section_color }}">
+  <div class="video-reel-section">
+    <div class="video-reel-heading">{{ section.settings.reel_heading }}</div>
+    <div class="swiper video-reel-swiper" data-reel-swiper>
+      <div class="swiper-wrapper">
+        {% for block in section.blocks %}
+          {% if block.settings.video_reel != blank %}
+            <div class="swiper-slide" data-swiper-slide>
+              <video
+                class="video-slide"
+                data-video-slide
+                playsinline
+                muted
+                loop
+                preload="metadata"
+                poster=""
+                data-src="{{ block.settings.video_reel.sources[1].url }}">
+                <source src="{{ block.settings.video_reel.sources[1].url }}" type="video/mp4">
+                Your browser does not support the video tag.
+              </video>
+            </div>
+          {% endif %}
+        {% endfor %}
+      </div>
+
+      <!-- Navigation buttons -->
+      <div class="swiper-button-prev"><svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 36 36" fill="none"><path d="M34.5 17.9918H3.1875M18.843 33.6533L3.1875 17.9993L18.843 2.34375" stroke="white" stroke-width="2.25"/></svg></div>
+      <div class="swiper-button-next"><svg xmlns="http://www.w3.org/2000/svg" width="37" height="36" viewBox="0 0 37 36" fill="none"><path d="M2 17.9918H33.3125M17.657 33.6533L33.3125 17.9993L17.657 2.34375" stroke="white" stroke-width="2.25"/></svg></div>
+    </div>
+  </div>
+</section>
+
+<script src="{{ 'video-reel.js' | asset_url }}" defer="defer"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  const swiper = new Swiper('[data-reel-swiper]', {
+    slidesPerView: '5',
+    centeredSlides: true,
+    initialSlide: 0,
+    spaceBetween: 10,
+    slidesPerGroup: 1,
+    loop: true,
+    navigation: {
+      nextEl: '.swiper-button-next',
+      prevEl: '.swiper-button-prev'
+    },
+    breakpoints: {
+      0: {
+        slidesPerView: 2,
+        spaceBetween: 3,
+      },
+      768: {
+        slidesPerView: 4,
+      }
+    },
+    on: {
+      init: manageVideoPlayback,
+      slideChangeTransitionEnd: manageVideoPlayback
+    }
+  });
+
+  function manageVideoPlayback() {
+    const videos = document.querySelectorAll('[data-video-slide]');
+    videos.forEach((video, index) => {
+      const slide = video.closest('[data-swiper-slide]');
+      if (slide.classList.contains('swiper-slide-active')) {
+        if (!video.src) {
+          video.src = video.dataset.src;
+        }
+        video.play().catch(() => {});
+      } else {
+        video.pause();
+      }
+    });
+  }
+});
+</script>
+
+{% schema %}
+  {
+    "name": "Video Reel Slider",
+    "settings": [
+      {
+        "id": "reel_heading",
+        "type": "text",
+        "label": "Section Heading",
+        "default": "Community"
+      },
+        {
+        "type": "color",
+        "id": "color_scheme",
+        "label": "Section Background Color"
+      }
+    ],
+    "blocks": [
+      {
+        "type": "video",
+        "name": "Video",
+        "settings": [
+          {
+            "type": "video",
+            "id": "video_reel",
+            "label": "Video"
+          }
+        ]
+      }
+    ],
+    "max_blocks": 10,
+    "presets": [
+      {
+        "name": "Video Reel Slider",
+        "category": "Media"
+      }
+    ]
+  }
+{% endschema %}
