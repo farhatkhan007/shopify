@@ -1,0 +1,496 @@
+{%- style -%}
+  .section-{{ section.id }}-padding {
+    padding-top: {{ section.settings.padding_top | times: 0.75 | round: 0 }}px;
+    padding-bottom: {{ section.settings.padding_bottom | times: 0.75 | round: 0 }}px;
+  }
+
+  @media screen and (min-width: 750px) {
+    .section-{{ section.id }}-padding {
+      padding-top: {{ section.settings.padding_top }}px;
+      padding-bottom: {{ section.settings.padding_bottom }}px;
+    }
+  }
+{%- endstyle -%}
+
+<style>
+  .collage-wrapper-title {
+    margin-top: 0;
+    margin-bottom: 3rem;
+  }
+
+  .collage {
+    display: grid;
+  }
+
+  .collage__item > * {
+    width: 100%;
+  }
+
+  .collage__item .card__content {
+    flex-grow: initial;
+  }
+
+  .collage-card__heading {
+    color: inherit;
+    font-size: var(--font-size-26);
+    line-height: normal;
+  }
+
+  .collage .collage__item:first-child .collage-card__content {
+    border-bottom-left-radius: 20px;
+    border-bottom-right-radius: 20px;
+  }
+
+  .collage .collage__item:first-child .media {
+    border-top-left-radius: 20px;
+    border-top-right-radius: 20px;
+  }
+
+  @media screen and (min-width: 750px) {
+    .collage {
+      grid-auto-flow: column;
+      gap: 20px;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      grid-template-columns: 22% 35%;
+    }
+
+    .collage__item--left:nth-child(3n - 2) {
+      grid-column: 1 / span 2;
+      grid-row: span 2;
+    }
+
+    .collage__item--left:nth-child(3n - 2):last-child {
+      grid-column: 1 / span 3;
+    }
+
+    .collage__item--left:nth-child(3n - 1),
+    .collage__item--left:nth-child(3n) {
+      grid-column-start: 3;
+    }
+
+    .collage__item--left:nth-child(3n - 1):last-child {
+      grid-row: span 2;
+    }
+
+    .collage__item--right:nth-child(3n - 2) {
+      grid-column: 1 / span 1;
+      grid-row: span 1;
+    }
+
+    .collage__item--right:nth-child(3n - 2):last-child {
+      grid-column: 1 / span 3;
+    }
+
+    .collage__item--right:nth-child(3n - 1) {
+      grid-column-start: 1;
+    }
+
+    .collage__item--right:nth-child(3n-1):last-child {
+      grid-column: span 2;
+    }
+
+    .collage__item--right:nth-child(3n) {
+      grid-column: 2 / span 2;
+      grid-row: span 2;
+    }
+
+    .collage__item--collection:only-child,
+    .collage__item--product:only-child {
+      justify-self: center;
+      max-width: 73rem;
+      width: 100%;
+    }
+
+    .collage .collage__item:first-child .collage-card__content {
+      border-bottom-left-radius: 20px;
+      border-bottom-right-radius: 20px;
+    }
+
+    .collage .collage__item:first-child .media {
+      border-top-left-radius: 20px;
+      border-top-right-radius: 20px;
+    }
+
+    .collage .collage__item:first-child .collage-card__heading {
+      max-width: 50%;
+    }
+
+    .collage .collage__item:not(:first-child) .collage-card {
+      display: flex;
+      flex-direction: row-reverse;
+    }
+
+    .collage .collage__item:not(:first-child) .media {
+      border-top-right-radius: 20px;
+      border-bottom-right-radius: 20px;
+      height: 100%;
+    }
+
+    .collage .collage__item:not(:first-child) .media img {
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .collage .collage__item:not(:first-child) .collage-card__content {
+      flex-direction: column;
+      border-top-left-radius: 20px;
+      border-bottom-left-radius: 20px;
+      padding: 20px 10px;
+      justify-content: flex-end;
+    }
+
+    .collage .collage__item:not(:first-child) .collage-card__heading {
+      font-size: var(--font-size-20);
+      line-height: 1.2;
+      padding-bottom: 30px;
+    }
+
+    .collage .collage__item:not(:first-child) .collage-card__content .button {
+      font-size: var(--font-size-12);
+      line-height: normal;
+      white-space: nowrap;
+    }  
+
+    .collage .collage__item:not(:first-child) .collage-card {
+      display: flex;
+      flex-direction: row-reverse;
+    }
+
+    .collage .collage__item:not(:first-child) .media {
+      border-top-right-radius: 20px;
+      border-bottom-right-radius: 20px;
+      height: 100%;
+    }
+
+    .collage .collage__item:not(:first-child) .media img {
+      height: 100%;
+      object-fit: cover;
+    }
+  }
+
+  .collage-card {
+    height: 100%;
+    position: relative;
+  }
+
+  .collage-card.gradient {
+    transform: perspective(0);
+  }
+
+  .collage-card .media {
+    height: fit-content;
+    overflow: hidden;
+  }
+
+  .collage-card .deferred-media {
+    height: 100%;
+    overflow: visible;
+  }
+
+  .collage-card__link {
+    display: block;
+    height: 100%;
+  }
+
+  .collage-card__content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px 25px;
+  }
+
+  .collage-card__content .button {
+    border: 1px solid;
+    height: 40px;
+    padding: 2px 23px;
+    display: flex;
+    align-items: center;
+    text-transform: inherit;
+    border-radius: 100px;
+    font-size: var(--font-size-15);
+    line-height: normal;
+    white-space: nowrap;
+  }
+
+    @media screen and (max-width: 749px) {
+    .collage {
+      gap: 20px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .collage--mobile {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .collage--mobile .collage__item--left:nth-child(3n - 2) {
+      grid-column: span 2;
+    }
+
+    .collage--mobile .collage__item--left:nth-child(3n - 2):nth-last-child(2) {
+      grid-column: span 1;
+    }
+
+    .collage--mobile .collage__item--left:nth-child(3n) {
+      grid-column-start: 2;
+    }
+
+    .collage--mobile .collage__item--right:nth-child(3n - 2) {
+      grid-column-start: 1;
+    }
+
+    .collage--mobile .collage__item--right:nth-child(3n - 2):last-child {
+      grid-column: span 2;
+    }
+
+    .collage--mobile .collage__item--right:nth-child(3n - 1) {
+      grid-column-start: 2;
+    }
+
+    .collage--mobile .collage__item--right:nth-child(3n) {
+      grid-column: 1 / span 2;
+    }
+
+    .collage .collage__item .collage-card__content {
+      border-bottom-left-radius: 15px;
+      border-bottom-right-radius: 15px;
+    }
+
+    .collage .collage__item .media {
+      border-top-left-radius: 15px;
+      border-top-right-radius: 15px;
+    }
+
+    .collage .collage__item .collage-card__content {
+      flex-direction: column;
+      justify-content: flex-start;
+      align-items: flex-start;
+      gap: 15px;
+    }
+
+    .collage-card__heading {
+      color: inherit;
+      font-size: var(--font-size-22);
+    }
+
+    .collage-card__content .button {
+      height: 37px;
+      font-size: var(--font-size-14);
+    }
+  }
+
+</style>
+
+<div class="color-{{ section.settings.color_scheme }} gradient isolate">
+  <div class="page-width section-{{ section.id }}-padding">
+    {%- if section.settings.heading != blank -%}
+      <h2 class="collage-wrapper-title inline-richtext {{ section.settings.heading_size }}{% if settings.animations_reveal_on_scroll %} scroll-trigger animate--slide-in{% endif %}">
+        {{ section.settings.heading }}
+      </h2>
+    {%- endif -%}
+    <div class="collage{% if section.settings.mobile_layout == 'collage' %} collage--mobile{% endif %}">
+      {% assign skip_card_product_styles = false %}
+      {%- for block in section.blocks -%}
+        <div
+          class="collage__item collage__item--{{ block.type }} collage__item--{{ section.settings.desktop_layout }}{% if settings.animations_reveal_on_scroll %} scroll-trigger animate--slide-in{% endif %}"
+          {{ block.shopify_attributes }}
+          {% if settings.animations_reveal_on_scroll %}
+          data-cascade
+          style="--animation-order: {{ forloop.index }};"
+          {% endif %}>
+          {%- assign placeholder_image_index = forloop.index0 | modulo: 4 | plus: 1 -%}
+          {%- case block.type -%}
+            {%- when 'image' -%}
+              <div class="collage-card {% if section.settings.card_styles == 'none' %}global-media-settings{% else %}card-wrapper {{ section.settings.card_styles }} color-{{ settings.card_color_scheme }} gradient{% endif %}">
+                <div
+                  class="media media--transparent ratio"
+                  {% if block.settings.image != blank %}
+                  style="--ratio-percent: {{ 1 | divided_by: block.settings.image.aspect_ratio | times: 100 }}%"
+                  {% else %}
+                  style="--ratio-percent: 100%"
+                  {% endif %}>
+                  {%- if block.settings.image != blank -%}
+                    {%- liquid
+                      if section.settings.desktop_layout == 'left'
+                        assign large_block = forloop.first
+                      else
+                        assign large_block = forloop.last
+                      endif
+
+                      assign grid_space_desktop = settings.spacing_grid_horizontal | divided_by: 2 | append: 'px'
+                      assign grid_space_mobile = settings.spacing_grid_horizontal | divided_by: 4 | append: 'px'
+                    -%}
+                    {%- if large_block -%}
+                      {%- capture sizes -%}
+{% if section.blocks.size == 1 -%}(min-width: {{ settings.page_width }}px) calc({{ settings.page_width }}px - 100px){% else %}(min-width: {{ settings.page_width }}px) calc(({{ settings.page_width }}px - 100px) * 2 / 3 - {{ grid_space_desktop }}){% endif %},
+{% if section.blocks.size == 1 -%}(min-width: 750px) calc(100vw - 100px){% else %}(min-width: 750px) calc((100vw - 100px) * 2 / 3 - {{ grid_space_desktop }}){% endif %},
+{% if section.blocks.size == 2 and section.settings.mobile_layout == 'collage' -%}calc((100vw - 30px) / 2){% else %}calc(100vw - 30px){% endif %}
+{%- endcapture -%}
+                      {{
+                        block.settings.image | image_url: width: 3200 | image_tag: sizes: sizes, widths: '50, 75, 100, 150, 200, 300, 400, 500, 750, 1000, 1250, 1500, 1750, 2000, 2250, 2500, 2750, 3000, 3200'
+                      }}
+                    {%- else -%}
+                      {%- capture sizes -%}
+(min-width: {{ settings.page_width }}px) calc(({{ settings.page_width }}px - 100px) * 1 / 3 - {{ grid_space_desktop }}),
+(min-width: 750px) calc((100vw - 100px) * 1 / 3 - {{ grid_space_desktop }}),
+{% if section.settings.mobile_layout == 'collage' %}calc((100vw - 30px) / 2 - {{ grid_space_mobile }}){% else %}calc(100vw - 30px){% endif %}
+{%- endcapture -%}
+                      {{
+                        block.settings.image | image_url: width: 3200 | image_tag: sizes: sizes, widths: '50, 75, 100, 150, 200, 300, 400, 500, 750, 1000, 1250, 1500, 1750, 2000, 2250, 2500, 2750, 3000, 3200'
+                      }}
+                    {%- endif -%}
+                  {%- else -%}
+                    {{ 'detailed-apparel-1' | placeholder_svg_tag: 'placeholder-svg' }}
+                  {%- endif -%}
+                </div>
+                <div class="collage-card__content" style="background-color: {{ block.settings.bg_color }}; color: {{ block.settings.text_color }};">
+                  <h3 class="collage-card__heading">{{ block.settings.heading }}</h3>
+                  <a href="{{ block.settings.button_link }}" class="button collage-card__button">
+                    {{ block.settings.button_label }}
+                  </a>
+                </div>
+              </div>
+
+          {%- endcase -%}
+        </div>
+      {%- endfor -%}
+    </div>
+  </div>
+</div>
+
+{% schema %}
+  {
+    "name": "Image Collage",
+    "tag": "section",
+    "class": "section Image Collage",
+    "disabled_on": {
+      "groups": ["header", "footer"]
+    },
+    "settings": [
+      {
+        "type": "select",
+        "id": "desktop_layout",
+        "options": [
+          {
+            "value": "left",
+            "label": "left"
+          }, {
+            "value": "right",
+            "label": "right"
+          }
+        ],
+        "default": "left",
+        "label": "left"
+      },
+      {
+        "type": "select",
+        "id": "mobile_layout",
+        "options": [
+          {
+            "value": "collage",
+            "label": "collage"
+          }, {
+            "value": "column",
+            "label": "column"
+          }
+        ],
+        "default": "column",
+        "label": "column"
+      },
+      {
+        "type": "select",
+        "id": "card_styles",
+        "options": [
+          {
+            "value": "none",
+            "label": "none"
+          }, {
+            "value": "product-card-wrapper",
+            "label": "card wrapper"
+          }
+        ],
+        "default": "product-card-wrapper",
+        "label": "card wrapper"
+      },
+      {
+        "type": "header",
+        "content": "Section padding"
+      }, {
+        "type": "range",
+        "id": "padding_top",
+        "min": 0,
+        "max": 100,
+        "step": 4,
+        "unit": "px",
+        "label": "Top space",
+        "default": 36
+      }, {
+        "type": "range",
+        "id": "padding_bottom",
+        "min": 0,
+        "max": 100,
+        "step": 4,
+        "unit": "px",
+        "label": "Bottom space",
+        "default": 36
+      }
+    ],
+    "blocks": [
+      {
+        "type": "image",
+        "name": "iamge",
+        "settings": [
+          {
+            "type": "image_picker",
+            "id": "image",
+            "label": "image"
+          },
+          {
+            "type": "text",
+            "id": "heading",
+            "label": "Heading",
+            "default": "Your block heading"
+          },
+          {
+            "type": "text",
+            "id": "button_label",
+            "label": "Button label",
+            "default": "Learn More"
+          },
+          {
+            "type": "url",
+            "id": "button_link",
+            "label": "Button link"
+          }, 
+          {
+            "type": "color",
+            "id": "bg_color",
+            "label": "Background color",
+            "default": "#f5f5f5"
+          },
+          {
+            "type": "color",
+            "id": "text_color",
+            "label": "Background color",
+            "default": "#fff"
+          }
+        ]
+      }
+    ],
+    "max_blocks": 3,
+    "presets": [
+      {
+        "name": "Image Collage",
+        "blocks": [
+          {
+            "type": "image"
+          }, {
+            "type": "image"
+          }, {
+            "type": "image"
+          }
+        ]
+      }
+    ]
+  }
+{% endschema %}
